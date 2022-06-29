@@ -1,18 +1,23 @@
 import '../App.css';
 import React, { Component, Fragment } from 'react';
-import { DocumentScannerRequest } from '../Models/DocumentScannerRequest';
+import { FormControl, InputLabel, MenuItem, Select} from '@mui/material';
+import HardwareConfigTextBox from '../Controllers/HardwareConfigTextBox';
 
 class DocumentScannerComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: "Status: Offline"
+      status: "Status: Offline",
+      command: "",
+      commandRequest: ""
     }
     this.handleStatus = this.handleStatus.bind(this);
     this.handleIntake = this.handleIntake.bind(this);
     this.handleScan = this.handleScan.bind(this);
     this.handleEject = this.handleEject.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleCommandSelect = this.handleCommandSelect.bind(this);
+    this.sendCommand = this.sendCommand.bind(this);
     this.props.getHardwareName("Document Scanner");
   }
 
@@ -58,11 +63,10 @@ class DocumentScannerComponent extends Component {
   }
 
   handleEject(){
-    const request = new DocumentScannerRequest(false);
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(request)
+      body: this.state.commandRequest
     };
     this.props.showLogMessage("Eject", "");
     fetch( 'http://localhost:8888/api/Eject/DocumentScanner', requestOptions)
@@ -89,29 +93,70 @@ class DocumentScannerComponent extends Component {
     })
   }
 
+  handleCommandSelect(event){
+    this.setState({command: event.target.value});
+    switch (event.target.value) {
+      case "eject":
+        this.setState({request: {
+          "stamp": false
+        }})
+        break;
+      case "status":
+      case "intake":
+      case "scan":
+      case "cancel":
+      default:
+        break;
+    }
+  }
+
+  sendCommand() {
+    switch (this.state.command) {
+      case "status":
+        return this.handleStatus();
+      case "intake":
+        return this.handleIntake();
+      case "scan":
+        return this.handleScan();
+      case "eject":
+        return this.handleEject();
+      case "cancel":
+        return this.handleCancel();
+      default:
+        break;
+    }
+  }
+
+  
+  textFieldOnchange(e) {
+    this.setState({commandRequest: e.target.value})
+  }
+  
+
   render(){
     return(
       <Fragment>
         <button
           className='normalBtn'
-          aria-label='Get Document Scanner Status'
-          onClick={this.handleStatus}>{this.state.status}</button>
-        <button 
-          className='normalBtn'
-          aria-label='Document Scanner Start Intake'
-          onClick={this.handleIntake}>Intake</button>
-        <button 
-          className='normalBtn'
-          aria-label='Document Scanner Start Scan'
-          onClick={this.handleScan}>Scan</button>
-        <button 
-          className='normalBtn'
-          aria-label='Document Scanner Start Eject'
-          onClick={this.handleEject}>Eject</button>
-        <button 
-          className='normalBtn'
-          aria-label='Cancel Document Scanner Action'
-          onClick={this.handleCancel}>Cancel</button>
+          aria-label='Send hardware command'
+          onClick={this.sendCommand}>Send Command</button>
+        <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Command</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={this.state.command}
+                    label="Command"
+                    onChange={this.handleCommandSelect}
+                >
+                    <MenuItem value={"status"}>Status</MenuItem>
+                    <MenuItem value={"intake"}>Intake</MenuItem>
+                    <MenuItem value={"scan"}>Scan</MenuItem>
+                    <MenuItem value={"eject"}>Eject</MenuItem>
+                    <MenuItem value={'cancel'}>Cancel</MenuItem>
+                </Select>
+        </FormControl>
+        <HardwareConfigTextBox requestContent={this.state.request} onChange={this.textFieldOnchange.bind(this)}/> 
       </Fragment>
     );
   }

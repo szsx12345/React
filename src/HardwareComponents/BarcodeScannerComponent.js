@@ -1,15 +1,20 @@
 import '../App.css';
 import React, { Component, Fragment } from 'react';
+import { FormControl, InputLabel, MenuItem, Select} from '@mui/material';
+import HardwareConfigTextBox from '../Controllers/HardwareConfigTextBox';
 
 class BarcodeScannerComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: "Status: Offline"
+      status: "Status: Offline",
+      command: ""
     }
     this.handleStatus = this.handleStatus.bind(this);
     this.handleScan = this.handleScan.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleCommandSelect = this.handleCommandSelect.bind(this);
+    this.sendCommand = this.sendCommand.bind(this);
     this.props.getHardwareName("Barcode Scanner");
   }
 
@@ -54,21 +59,46 @@ class BarcodeScannerComponent extends Component {
     })
   }
 
+  handleCommandSelect(event){
+      this.setState({command: event.target.value});
+  }
+
+  sendCommand() {
+    switch (this.state.command) {
+      case "status":
+        return this.handleStatus()
+      case "scan":
+        return this.handleScan()
+      case "cancel":
+        return this.handleCancel()
+      default:
+        break;
+    }
+  }
+
+
   render(){
     return(
       <Fragment>
         <button
           className='normalBtn'
-          aria-label='Get Barcode Scanner Status'
-          onClick={this.handleStatus}>{this.state.status}</button>
-        <button 
-          className='normalBtn'
-          aria-label='Start Scan Barcode'
-          onClick={this.handleScan}>Scan</button>
-        <button 
-          className='normalBtn'
-          aria-label='Cancel Barcode Scanner Action'
-          onClick={this.handleCancel}>Cancel</button>
+          aria-label='Send hardware command'
+          onClick={this.sendCommand}>Send Command</button>
+        <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Command</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={this.state.command}
+                    label="Command"
+                    onChange={this.handleCommandSelect}
+                >
+                    <MenuItem value={"status"}>Status</MenuItem>
+                    <MenuItem value={"scan"}>Scan</MenuItem>
+                    <MenuItem value={'cancel'}>Cancel</MenuItem>
+                </Select>
+        </FormControl> 
+        <HardwareConfigTextBox/> 
       </Fragment>
     );
   }

@@ -1,19 +1,24 @@
 import '../App.css';
 import React, { Component, Fragment } from 'react';
 import { PrinterRequest } from '../Models/PrinterRequest';
+import HardwareConfigTextBox from '../Controllers/HardwareConfigTextBox';
+import { FormControl, InputLabel, MenuItem, Select} from '@mui/material';
 
 class PrinterComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       status: "Status: Offline",
-      htmlFile: null
+      htmlFile: null,
+      command: ""
     }
     this.handleStatus = this.handleStatus.bind(this);
     this.handlePrint = this.handlePrint.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleSelectFile = this.handleSelectFile.bind(this);
     this.selectFileRef = React.createRef();
+    this.handleCommandSelect = this.handleCommandSelect.bind(this);
+    this.sendCommand = this.sendCommand.bind(this);
     this.props.getHardwareName("Printer");
   }
 
@@ -91,26 +96,51 @@ class PrinterComponent extends Component {
     })
   }
 
+  handleCommandSelect(event){
+    this.setState({command: event.target.value});
+  }
+
+  sendCommand() {
+    switch (this.state.command) {
+      case "status":
+        return this.handleStatus();
+      case "print":
+        return this.handlePrint();
+      case "cancel":
+        return this.handleCancel();
+      default:
+        break;
+    }
+  }
+
+
   render(){
     return(
       <Fragment>
         <button
           className='normalBtn'
-          aria-label='Get Printer Status'
-          onClick={this.handleStatus}>{this.state.status}</button>
+          aria-label='Send hardware command'
+          onClick={this.sendCommand}>Send Command</button>
+        <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Command</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={this.state.command}
+                    label="Command"
+                    onChange={this.handleCommandSelect}
+                >
+                    <MenuItem value={"status"}>Status</MenuItem>
+                    <MenuItem value={"print"}>Print</MenuItem>
+                    <MenuItem value={'cancel'}>Cancel</MenuItem>
+                </Select>
+        </FormControl> 
         <input type="file" id="file" ref={this.selectFileRef} style={{ display: "none" }} onChange={this.handleFileUpload.bind(this)}/>
         <button 
-          className='normalBtn'
+          className='selectFileBtn'
           aria-label='Select HTML File'
           onClick={this.handleSelectFile}>Select File</button>
-        <button 
-          className='normalBtn'
-          aria-label='Printer Start Print'
-          onClick={this.handlePrint}>Print</button>
-        <button 
-          className='normalBtn'
-          aria-label='Cancel Printer Action'
-          onClick={this.handleCancel}>Cancel</button>
+        <HardwareConfigTextBox/> 
       </Fragment>
     );
   }

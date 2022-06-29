@@ -1,17 +1,22 @@
 import '../App.css';
 import React, { Component, Fragment } from 'react';
+import { FormControl, InputLabel, MenuItem, Select} from '@mui/material';
+import HardwareConfigTextBox from '../Controllers/HardwareConfigTextBox';
 
 class BillAcceptorComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      status: "Status: Offline"
+      status: "Status: Offline",
+      command: ""
     }
     this.handleStatus = this.handleStatus.bind(this);
     this.handleIntake = this.handleIntake.bind(this);
     this.handleAccept = this.handleAccept.bind(this);
     this.handleEject = this.handleEject.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleCommandSelect = this.handleCommandSelect.bind(this);
+    this.sendCommand = this.sendCommand.bind(this);
     this.props.getHardwareName("Bill Acceptor");
   }
     
@@ -81,29 +86,52 @@ class BillAcceptorComponent extends Component {
     })
   }
 
+  
+  handleCommandSelect(event){
+    this.setState({command: event.target.value});
+  }
+
+  sendCommand() {
+    switch (this.state.command) {
+      case "status":
+        return this.handleStatus()
+      case "intake":
+        return this.handleIntake()
+      case "accept":
+        return this.handleAccept()
+      case "eject":
+        return this.handleEject()
+      case "cancel":
+        return this.handleCancel()
+      default:
+        break;
+    }
+  }
+
   render(){
     return(
       <Fragment>
         <button
           className='normalBtn'
-          aria-label='Get Bill Acceptor Status'
-          onClick={this.handleStatus}>{this.state.status}</button>
-        <button 
-          className='normalBtn'
-          aria-label='Bill Acceptor Start Intake'
-          onClick={this.handleIntake}>Intake</button>
-        <button 
-          className='normalBtn'
-          aria-label='Bill Acceptor Accept Bill'
-          onClick={this.handleAccept}>Accept</button>
-        <button 
-          className='normalBtn'
-          aria-label='Bill Acceptor Eject Bill'
-          onClick={this.handleEject}>Eject</button>
-        <button 
-          className='normalBtn'
-          aria-label='Cancel Bill Acceptor Action'
-          onClick={this.handleCancel}>Cancel</button>
+          aria-label='Send hardware command'
+          onClick={this.sendCommand}>Send Command</button>
+        <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Command</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={this.state.command}
+                    label="Command"
+                    onChange={this.handleCommandSelect}
+                >
+                    <MenuItem value={"status"}>Status</MenuItem>
+                    <MenuItem value={"intake"}>Intake</MenuItem>
+                    <MenuItem value={"accept"}>Accept</MenuItem>
+                    <MenuItem value={"eject"}>Eject</MenuItem>
+                    <MenuItem value={'cancel'}>Cancel</MenuItem>
+                </Select>
+        </FormControl>
+        <HardwareConfigTextBox/> 
       </Fragment>
     );
   }
