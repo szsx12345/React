@@ -5,7 +5,7 @@
   "author": "Jack Lin <jlin@kiosk.com>",
   "description": "React app",
   "homepage": ".",
-  "main": "main.js",
+  "main": "./build/main.js",
   "dependencies": {
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
@@ -31,7 +31,35 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron:start": "wait-on tcp:3000 && electron .",
-    "build_linux": "electron-packager . LinuxApp --platform=linux --arch=x64"
+    "build_linux": "electron-packager . LinuxApp --platform=linux --arch=x64",
+    "build_win": "electron-packager . WinApp --platform=win32 --arch=x64",
+    "package": "rimraf build && rimraf installer && npm run build && electron-builder",
+    "package_linux": "rimraf build && rimraf installer && npm run build && electron-builder -l",
+    "docker_command": "docker run --rm -ti -v D:\\Repos\\React\\:/project -w /project electronuserland/builder"
+  },
+  "build": {
+    "appId": "com.kiosk.kubra.bp",
+    "copyright": "Copyright 2019 Kiosk Information Systems",
+    "asar": false,
+    "extends": null,
+    "files": [
+      "build"
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "runAfterFinish": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "directories": {
+      "output": "installer"
+    },
+    "linux": {
+      "target": "deb"
+    },
+    "deb": {}
   },
   "eslintConfig": {
     "extends": [

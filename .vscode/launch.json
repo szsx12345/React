@@ -15,7 +15,7 @@
             "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron.exe"
             },
             "runtimeArgs": [
-              "${workspaceRoot}/main.js",
+              "${workspaceRoot}/src/main.js",
               "--remote-debugging-port=9222"
             ]
           },

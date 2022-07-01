@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+LinuxApp-linux-x64
+installer
+WinApp-win32-x64
