@@ -70,7 +70,7 @@ class App extends Component {
                             <Grid item xs={12}>
                                 <label className='commandLabel'>{this.state.command}</label>
                                 <br/>
-                                <label className='logTextField'>{this.state.logMessage}</label>
+                                <label className='logTextField'><pre>{this.state.logMessage}</pre></label>
                             </Grid>
                         </Grid>
                     </Grid>

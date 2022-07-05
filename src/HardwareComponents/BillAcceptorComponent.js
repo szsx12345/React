@@ -27,7 +27,7 @@ class BillAcceptorComponent extends Component {
     .then(data => {
       console.log(data.Status.State);
       this.setState({status: "Status: " + data.Status.State});
-      this.props.showLogMessage("Status", JSON.stringify(data))
+      this.props.showLogMessage("Status", JSON.stringify(data, null, 2))
     })
     .catch(e => {
         console.log(e);
@@ -40,7 +40,7 @@ class BillAcceptorComponent extends Component {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      this.props.showLogMessage("Intake", JSON.stringify(data))
+      this.props.showLogMessage("Intake", JSON.stringify(data, null, 2))
     })
     .catch(e => {
         console.log(e);
@@ -53,7 +53,7 @@ class BillAcceptorComponent extends Component {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      this.props.showLogMessage("Accept", JSON.stringify(data))
+      this.props.showLogMessage("Accept", JSON.stringify(data, null, 2))
     })
     .catch(e => {
         console.log(e);
@@ -66,7 +66,7 @@ class BillAcceptorComponent extends Component {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      this.props.showLogMessage("Eject", JSON.stringify(data))
+      this.props.showLogMessage("Eject", JSON.stringify(data, null, 2))
     })
     .catch(e => {
         console.log(e);
@@ -79,7 +79,7 @@ class BillAcceptorComponent extends Component {
     .then(res => res.json())
     .then(data => {
       console.log(data);
-      this.props.showLogMessage("Cancel", JSON.stringify(data))
+      this.props.showLogMessage("Cancel", JSON.stringify(data, null, 2))
     })
     .catch(e => {
         console.log(e);
